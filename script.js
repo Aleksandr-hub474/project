@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     const form = document.getElementById('dataForm');
     const dataList = document.getElementById('dataList');
-    const apiKey = 'your-api-key';
-    const binId = 'your-bin-id';
+    const apiKey = '$2a$10$FMWW347IDh8nMSpouB2d4O90mpOi2m/bSxz.p8YhWg48z9mBSMzAm';
+    const binId = '66a0fddead19ca34f88c2fbd';
     const url = `https://api.jsonbin.io/v3/b/${binId}`;
 
     // Function to load saved data from JSONBin and display it
