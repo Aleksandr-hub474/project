@@ -21,8 +21,8 @@
             const form = document.getElementById('dataForm');
             const dataList = document.getElementById('dataList');
             const debug = document.getElementById('debug');
-            const apiKey = '$2a$10$FMWW347IDh8nMSpouB2d4O90mpOi2m/bSxz.p8YhWg48z9mBSMzAm';
-            const binId = '66a0fddead19ca34f88c2fbd';
+            const apiKey = 'your-api-key';
+            const binId = 'your-bin-id';
             const url = `https://api.jsonbin.io/v3/b/${binId}`;
 
             // Function to append debug messages
@@ -34,25 +34,27 @@
 
             // Function to load saved data from JSONBin and display it
             async function loadData() {
-                appendDebug('Loading data...');
+                appendDebug('Attempting to load data...');
                 try {
                     const response = await fetch(url, {
                         headers: {
                             'X-Master-Key': apiKey
                         }
                     });
-                    if (!response.ok) throw new Error('Network response was not ok');
+                    appendDebug('Fetch response status: ' + response.status);
+                    if (!response.ok) throw new Error('Network response was not ok. Status: ' + response.status);
                     const data = await response.json();
                     appendDebug('Data loaded successfully');
                     displayData(data.record.data);
                 } catch (error) {
-                    appendDebug('Error loading data: ' + error);
+                    appendDebug('Error loading data: ' + error.message);
                     console.error('Error loading data:', error);
                 }
             }
 
             // Function to display data in the list
             function displayData(data) {
+                appendDebug('Displaying data...');
                 dataList.innerHTML = ''; // Clear current list
                 data.forEach(item => {
                     const li = document.createElement('li');
@@ -64,7 +66,7 @@
 
             // Function to save data to JSONBin
             async function saveData(data) {
-                appendDebug('Saving data...');
+                appendDebug('Attempting to save data...');
                 try {
                     const response = await fetch(url, {
                         method: 'PUT',
@@ -74,11 +76,12 @@
                         },
                         body: JSON.stringify({ data })
                     });
-                    if (!response.ok) throw new Error('Network response was not ok');
+                    appendDebug('Fetch response status (save): ' + response.status);
+                    if (!response.ok) throw new Error('Network response was not ok. Status: ' + response.status);
                     appendDebug('Data saved successfully');
                     loadData();
                 } catch (error) {
-                    appendDebug('Error saving data: ' + error);
+                    appendDebug('Error saving data: ' + error.message);
                     console.error('Error saving data:', error);
                 }
             }
@@ -88,21 +91,24 @@
                 event.preventDefault();
                 appendDebug('Form submitted');
                 const dataInput = document.getElementById('dataInput').value;
+                appendDebug('Data input: ' + dataInput);
                 try {
                     const currentDataResponse = await fetch(url, {
                         headers: {
                             'X-Master-Key': apiKey
                         }
                     });
-                    if (!currentDataResponse.ok) throw new Error('Network response was not ok');
+                    appendDebug('Fetch response status (current data): ' + currentDataResponse.status);
+                    if (!currentDataResponse.ok) throw new Error('Network response was not ok. Status: ' + currentDataResponse.status);
                     const currentData = await currentDataResponse.json();
                     appendDebug('Current data loaded');
                     const updatedData = currentData.record.data;
+                    appendDebug('Current data: ' + JSON.stringify(updatedData));
                     updatedData.push(dataInput);
                     saveData(updatedData);
                     form.reset(); // Clear the form input
                 } catch (error) {
-                    appendDebug('Error fetching current data: ' + error);
+                    appendDebug('Error fetching current data: ' + error.message);
                     console.error('Error fetching current data:', error);
                 }
             });
@@ -113,4 +119,3 @@
     </script>
 </body>
 </html>
-
